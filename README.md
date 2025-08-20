@@ -41,17 +41,16 @@ To generate a *.hpi file:
 <img width="969" alt="Screenshot 2024-04-01 at 12 16 40 PM" src="https://github.com/mattilavan/jenkins-plugins/assets/44679211/ab07cd71-d6aa-4a55-87c8-349c196b538d">
 
 - You will see your credentials, if you have any. Click on the store or domain you would like to add your DX API Key to.
-<img width="952" alt="Screenshot 2024-04-01 at 12 23 43 PM" src="https://github.com/mattilavan/jenkins-plugins/assets/44679211/185658c3-feb7-4a33-8712-7bca499cf013">
-
-- Click “Add Credentials”.
-<img width="343" alt="Screenshot 2024-04-01 at 12 25 13 PM" src="https://github.com/mattilavan/jenkins-plugins/assets/44679211/3b2be1f0-e341-4de3-bf65-0947408cce73">
-
 - For "Kind", select “Secret Text”
 - Choose your desired scope
 - For “Secret”, add your API Key
 - For “ID”, use the string "dx-api-token"
 - For "Description", use “API Key for the DX API”
 - Click “OK”
+
+- Click “Add Credentials”.
+<img width="343" alt="Screenshot 2024-04-01 at 12 25 13 PM" src="https://github.com/mattilavan/jenkins-plugins/assets/44679211/3b2be1f0-e341-4de3-bf65-0947408cce73">
+
 
 ### Configuring the Plugin
 - Navigate to **Manage Jenkins → System**.
