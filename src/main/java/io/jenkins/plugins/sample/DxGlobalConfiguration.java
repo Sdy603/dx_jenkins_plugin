@@ -15,12 +15,25 @@ import org.kohsuke.stapler.StaplerRequest;
 public class DxGlobalConfiguration extends GlobalConfiguration {
 
     private String dxBaseUrl;
-    private String includeRepoPattern;
-    private String includeJobPattern;
-    private String includeBranchPattern;
+    private String includeRepoPattern = ".*";
+    private String includeJobPattern = ".*";
+    private String includeBranchPattern = ".*";
+    private String pipelineSource = "Jenkins";
 
     public DxGlobalConfiguration() {
         load();
+        if (includeRepoPattern == null || includeRepoPattern.isEmpty()) {
+            includeRepoPattern = ".*";
+        }
+        if (includeJobPattern == null || includeJobPattern.isEmpty()) {
+            includeJobPattern = ".*";
+        }
+        if (includeBranchPattern == null || includeBranchPattern.isEmpty()) {
+            includeBranchPattern = ".*";
+        }
+        if (pipelineSource == null || pipelineSource.isEmpty()) {
+            pipelineSource = "Jenkins";
+        }
     }
 
     public static DxGlobalConfiguration get() {
@@ -68,6 +81,17 @@ public class DxGlobalConfiguration extends GlobalConfiguration {
     @DataBoundSetter
     public void setIncludeBranchPattern(@Nullable String includeBranchPattern) {
         this.includeBranchPattern = includeBranchPattern;
+        save();
+    }
+
+    @Nullable
+    public String getPipelineSource() {
+        return pipelineSource;
+    }
+
+    @DataBoundSetter
+    public void setPipelineSource(@Nullable String pipelineSource) {
+        this.pipelineSource = pipelineSource;
         save();
     }
 
