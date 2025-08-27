@@ -88,8 +88,8 @@ jobs:
         # Fetch all tags from remote
         git fetch --tags
         
-        # Get the latest tag, default to 0.9.99 if none exists (so first increment gives 1.0.0)
-        LATEST_TAG=$(git tag -l --sort=-version:refname | head -n1)
+        # Get the latest semantic version tag (format: x.y.z), ignore non-semantic tags
+        LATEST_TAG=$(git tag -l | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -n1)
         if [ -z "$LATEST_TAG" ]; then
           NEW_TAG="1.0.0"
         else
