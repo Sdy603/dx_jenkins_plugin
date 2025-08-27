@@ -8,7 +8,7 @@ on:
         required: true
         type: string
       prerelease:
-        description: 'Mark as pre-release'
+        description: 'Mark as pre-release '
         required: false
         type: boolean
         default: false
