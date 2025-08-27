@@ -85,7 +85,10 @@ jobs:
         git config user.name "github-actions[bot]"
         git config user.email "github-actions[bot]@users.noreply.github.com"
         
-        # Get the latest tag, default to 1.0.0 if none exists
+        # Fetch all tags from remote
+        git fetch --tags
+        
+        # Get the latest tag, default to 0.9.99 if none exists (so first increment gives 1.0.0)
         LATEST_TAG=$(git tag -l --sort=-version:refname | head -n1)
         if [ -z "$LATEST_TAG" ]; then
           NEW_TAG="1.0.0"
@@ -104,11 +107,16 @@ jobs:
         echo "Previous tag: ${LATEST_TAG:-'none'}"
         echo "New tag: $NEW_TAG"
         
-        # Create and push the tag
-        git tag "$NEW_TAG"
-        git push origin "$NEW_TAG"
-        
-        echo "new_tag=$NEW_TAG" >> $GITHUB_OUTPUT
+        # Check if tag already exists
+        if git tag -l | grep -q "^${NEW_TAG}$"; then
+          echo "Tag $NEW_TAG already exists, skipping tag creation"
+          echo "new_tag=" >> $GITHUB_OUTPUT
+        else
+          # Create and push the tag
+          git tag "$NEW_TAG"
+          git push origin "$NEW_TAG"
+          echo "new_tag=$NEW_TAG" >> $GITHUB_OUTPUT
+        fi
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
