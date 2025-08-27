@@ -110,9 +110,9 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Upload to GitHub Packages (Main branch, Java 11 only)
-      if: github.ref == 'refs/heads/main' && matrix.java-version == '11'
-      run: |
-        mvn deploy -DskipTests
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Upload JAR artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: dx-data-sharer-jar-java${{ matrix.java-version }}
+        path: target/dx-data-sharer.jar
+        retention-days: 30
