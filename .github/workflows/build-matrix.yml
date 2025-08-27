@@ -77,16 +77,51 @@ jobs:
         echo "version=$VERSION" >> $GITHUB_OUTPUT
         echo "Version: $VERSION"
 
+    - name: Create incremental tag (Main branch, Java 11 only)
+      if: github.ref == 'refs/heads/main' && matrix.java-version == '11'
+      id: create_tag
+      run: |
+        # Configure git
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        
+        # Get the latest tag, default to 1.0.0 if none exists
+        LATEST_TAG=$(git tag -l --sort=-version:refname | head -n1)
+        if [ -z "$LATEST_TAG" ]; then
+          NEW_TAG="1.0.0"
+        else
+          # Extract version parts
+          VERSION_PARTS=(${LATEST_TAG//./ })
+          MAJOR=${VERSION_PARTS[0]}
+          MINOR=${VERSION_PARTS[1]}
+          PATCH=${VERSION_PARTS[2]}
+          
+          # Increment patch version
+          PATCH=$((PATCH + 1))
+          NEW_TAG="${MAJOR}.${MINOR}.${PATCH}"
+        fi
+        
+        echo "Previous tag: ${LATEST_TAG:-'none'}"
+        echo "New tag: $NEW_TAG"
+        
+        # Create and push the tag
+        git tag "$NEW_TAG"
+        git push origin "$NEW_TAG"
+        
+        echo "new_tag=$NEW_TAG" >> $GITHUB_OUTPUT
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
     - name: Create Release on Tag (Java 11 only)
-      if: startsWith(github.ref, 'refs/tags/') && matrix.java-version == '11'
+      if: (startsWith(github.ref, 'refs/tags/') || steps.create_tag.outputs.new_tag) && matrix.java-version == '11'
       uses: softprops/action-gh-release@v2
       with:
         files: |
           target/dx-data-sharer.hpi
           target/dx-data-sharer.jar
-        name: Release ${{ github.ref_name }}
+        name: Release ${{ steps.create_tag.outputs.new_tag || github.ref_name }}
         body: |
-          ## DX Data Sharer Jenkins Plugin - ${{ github.ref_name }}
+          ## DX Data Sharer Jenkins Plugin - ${{ steps.create_tag.outputs.new_tag || github.ref_name }}
           
           This release contains the compiled Jenkins plugin for DX Data Sharing.
           
