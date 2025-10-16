@@ -26,7 +26,7 @@ public class DxRunListener extends RunListener<Run<?, ?>> {
     @Override
     public void onCompleted(Run<?, ?> run, @Nonnull TaskListener listener) {
         Result result = run.getResult();
-        if (result == null) {
+        if (result == null || !result.equals(Result.SUCCESS)) {
             return;
         }
 
